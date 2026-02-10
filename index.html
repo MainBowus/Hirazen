@@ -1,0 +1,75 @@
+<!DOCTYPE html>
+<html lang="th">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Hiragana Master</title>
+    
+    <link href="https://fonts.googleapis.com/css2?family=Noto+Serif+JP:wght@500;700&family=Sarabun:wght@300;500&family=Noto+Sans+JP:wght@500;700&display=swap" rel="stylesheet">
+    
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+
+    <div class="mobile-header">
+        <div class="mobile-logo">HIRAGANA ZEN</div>
+        <div onclick="toggleNav()" style="cursor:pointer; font-size: 1.2rem;">☰</div>
+    </div>
+
+    <nav id="sidebar">
+        <div class="logo">平仮名 Zen</div>
+        <div class="nav-links">
+            <div class="nav-item active" id="nav-home" onclick="showView('home')">🏠 หน้าหลัก</div>
+            <div class="menu-label">ฝึกฮิรางานะ</div>
+            <div class="nav-item" id="nav-basic" onclick="startQuiz('basic')">✨ พื้นฐาน (A-N)</div>
+            <div class="nav-item" id="nav-dakuon" onclick="startQuiz('dakuon')">🔔 เสียงขุ่น (Ga-Po)</div>
+            <div class="nav-item" id="nav-yoon" onclick="startQuiz('yoon')">🌀 เสียงควบ (Kya)</div>
+            <div class="menu-label">คลังความรู้</div>
+            <div class="nav-item" id="nav-table" onclick="showView('table')">📊 ตารางฮิรางานะ</div>
+        </div>
+    </nav>
+
+    <main>
+        <section id="home" class="view-section active">
+            <h1 class="hero-title">สงบนิ่งและเรียนรู้</h1>
+            <p class="hero-subtitle">เริ่มต้นการฝึกฝนฮิรางานะด้วยจิตใจที่ผ่อนคลาย</p>
+            
+            <div class="stats-container">
+                <div class="stat-card"><b id="stat-score">0</b><span>คะแนนสูงสุด</span></div>
+                <div class="stat-card"><b id="stat-total">0</b><span>ข้อที่ฝึกแล้ว</span></div>
+            </div>
+
+            <div class="zen-card clickable" onclick="startQuiz('basic')">
+                <h3>บทเรียนพื้นฐาน</h3>
+                <p>ฝึกตัวอักษร 46 ตัวหลักที่ใช้บ่อยที่สุด</p>
+                <span class="cta-text">คลิกเพื่อเริ่มฝึก ➔</span>
+            </div>
+        </section>
+
+        <section id="quiz" class="view-section">
+            <div class="zen-card quiz-container">
+                <div class="quiz-header">
+                    <span id="quiz-title">พื้นฐาน</span>
+                    <span>SCORE: <b id="current-score">0</b></span>
+                </div>
+                <div class="q-char" id="target-char">あ</div>
+                <div id="quiz-feedback" class="feedback-area"></div>
+                <div class="choices-grid" id="choices-area"></div>
+                <button class="action-btn" id="next-btn" onclick="handleQuizAction()" disabled>ยืนยัน</button>
+            </div>
+        </section>
+
+        <section id="table" class="view-section">
+            <h2 class="section-title">ตารางอักษรฮิรางานะ</h2>
+            <div class="group-header">Gojūon (เสียงพื้นฐาน)</div>
+            <div class="char-grid" id="grid-basic"></div>
+            <div class="group-header">Dakuon (เสียงขุ่น)</div>
+            <div class="char-grid" id="grid-dakuon"></div>
+            <div class="group-header">Yōon (เสียงควบ)</div>
+            <div class="char-grid" id="grid-yoon"></div>
+        </section>
+    </main>
+
+    <script src="script.js"></script>
+</body>
+</html> 
