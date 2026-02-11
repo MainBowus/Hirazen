@@ -190,3 +190,72 @@ td { padding: 12px 0; border-top: 1px solid #f5f5f5; }
     75% { transform: rotate(-1deg); }
     100% { transform: rotate(0deg); }
 }
+/* --- 11. ตารางอักษร (Library Grid - Bug Fix Version) --- */
+.group-header {
+    font-family: 'Noto Serif JP', serif;
+    font-size: 1.2rem;
+    border-left: 4px solid var(--zen-green);
+    padding-left: 15px;
+    margin: 30px 0 15px 0;
+    color: var(--text-main);
+    font-weight: 700;
+}
+
+.char-grid {
+    display: grid;
+    /* แก้บัค: ใช้ auto-fill ร่วมกับ minmax เพื่อให้ช่องเท่ากันเสมอ */
+    grid-template-columns: repeat(auto-fill, minmax(80px, 1fr));
+    gap: 15px;
+    margin-bottom: 40px;
+}
+
+.char-box {
+    background: var(--white);
+    border: 1px solid #eeeae0;
+    border-radius: 12px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    padding: 15px 5px;
+    cursor: pointer;
+    box-shadow: 0 4px 6px rgba(0,0,0,0.02);
+    /* สืบทอด transition จาก * ที่คุณตั้งไว้ */
+}
+
+.char-box:hover {
+    border-color: var(--zen-green);
+    transform: translateY(-5px);
+    box-shadow: 0 8px 20px rgba(107, 142, 35, 0.1);
+}
+
+.char-box .jp {
+    font-size: 2rem;
+    font-weight: 700;
+    color: var(--zen-dark-green);
+    font-family: 'Noto Sans JP', sans-serif;
+    margin-bottom: 5px;
+}
+
+.char-box .ro {
+    font-size: 0.85rem;
+    color: #a5a095;
+    font-family: 'Sarabun', sans-serif;
+    letter-spacing: 0.5px;
+    text-transform: lowercase;
+}
+
+/* ปรับแต่งสำหรับมือถือเพิ่มเติม */
+@media (max-width: 600px) {
+    .char-grid {
+        grid-template-columns: repeat(auto-fill, minmax(65px, 1fr));
+        gap: 10px;
+    }
+    
+    .char-box {
+        padding: 10px 5px;
+    }
+    
+    .char-box .jp {
+        font-size: 1.6rem;
+    }
+}
