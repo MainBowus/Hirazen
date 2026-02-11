@@ -26,26 +26,44 @@ const DATA = {
         ]
     };
 
-// --- App State ---
 let state = {
-    pool: [], target: null, selected: null, locked: false, score: 0,
-    best: localStorage.getItem('zen_best') || 0,
-    total: localStorage.getItem('zen_total') || 0
+    pool: [], target: null, selected: null, locked: false, score: 0, streak: 0,
+    best: parseInt(localStorage.getItem('zen_best')) || 0,
+    total: parseInt(localStorage.getItem('zen_total')) || 0
 };
 
-// --- Navigation ---
-function toggleNav() { 
-    document.getElementById('sidebar').classList.toggle('open'); 
+// --- Sound Engine (Web Audio API) ---
+const audioCtx = new (window.AudioContext || window.webkitAudioContext)();
+function playSound(type) {
+    if (audioCtx.state === 'suspended') audioCtx.resume();
+    const osc = audioCtx.createOscillator();
+    const gain = audioCtx.createGain();
+    osc.connect(gain); gain.connect(audioCtx.destination);
+
+    if (type === 'correct') {
+        osc.frequency.setValueAtTime(523, audioCtx.currentTime); // C5
+        osc.frequency.exponentialRampToValueAtTime(880, audioCtx.currentTime + 0.1);
+        gain.gain.setValueAtTime(0.1, audioCtx.currentTime);
+        gain.gain.exponentialRampToValueAtTime(0.01, audioCtx.currentTime + 0.3);
+        osc.start(); osc.stop(audioCtx.currentTime + 0.3);
+    } else {
+        osc.type = 'sawtooth';
+        osc.frequency.setValueAtTime(120, audioCtx.currentTime);
+        gain.gain.setValueAtTime(0.1, audioCtx.currentTime);
+        gain.gain.linearRampToValueAtTime(0, audioCtx.currentTime + 0.2);
+        osc.start(); osc.stop(audioCtx.currentTime + 0.2);
+    }
 }
+
+// --- Navigation ---
+function toggleNav() { document.getElementById('sidebar').classList.toggle('open'); }
 
 function showView(id) {
     document.querySelectorAll('.view-section').forEach(s => s.classList.remove('active'));
     document.querySelectorAll('.nav-item').forEach(n => n.classList.remove('active'));
-    
     document.getElementById(id).classList.add('active');
     const nav = document.getElementById('nav-' + id);
     if(nav) nav.classList.add('active');
-    
     if(window.innerWidth <= 900) document.getElementById('sidebar').classList.remove('open');
     if(id === 'home') updateStats();
 }
@@ -59,21 +77,19 @@ function updateStats() {
 function startQuiz(mode) {
     state.pool = DATA[mode];
     state.score = 0;
+    state.streak = 0;
     document.getElementById('current-score').innerText = "0";
-    document.getElementById('quiz-title').innerText = mode === 'basic' ? 'พื้นฐาน' : mode === 'dakuon' ? 'เสียงขุ่น' : 'เสียงควบ';
+    updateStreakUI();
     showView('quiz');
     generateQ();
 }
 
 function generateQ() {
-    state.locked = false; 
-    state.selected = null;
-    
+    state.locked = false; state.selected = null;
     const btn = document.getElementById('next-btn');
-    btn.disabled = true; 
-    btn.innerText = "ยืนยันคำตอบ";
-    
+    btn.disabled = true; btn.innerText = "ยืนยันคำตอบ";
     document.getElementById('quiz-feedback').innerText = "";
+    
     state.target = state.pool[Math.floor(Math.random() * state.pool.length)];
     document.getElementById('target-char').innerText = state.target.c;
 
@@ -101,7 +117,6 @@ function generateQ() {
 
 function handleQuizAction() {
     if(state.locked) { generateQ(); return; }
-    
     state.locked = true;
     state.total++;
     localStorage.setItem('zen_total', state.total);
@@ -113,26 +128,47 @@ function handleQuizAction() {
     btns.forEach(b => {
         if(b.innerText === state.target.r) corBtn = b;
         if(b.classList.contains('selected')) selBtn = b;
+        b.disabled = true;
     });
 
     if(state.selected === state.target.r) {
         state.score += 10;
+        state.streak++;
+        playSound('correct');
         selBtn.classList.add('correct');
-        fb.innerText = "ถูกต้องครับ";
-        fb.style.color = "#8fbc8f";
+        fb.innerText = "ถูกต้องยอดเยี่ยม! ✨";
+        fb.style.color = "#6b8e23";
         if(state.score > state.best) {
             state.best = state.score;
             localStorage.setItem('zen_best', state.best);
         }
     } else {
+        state.streak = 0;
+        playSound('wrong');
         if(selBtn) selBtn.classList.add('wrong');
         corBtn.classList.add('correct');
         fb.innerText = "คำตอบที่ถูกคือ " + state.target.r;
         fb.style.color = "#e9967a";
     }
     
+    updateStreakUI();
     document.getElementById('current-score').innerText = state.score;
+    document.getElementById('next-btn').disabled = false;
     document.getElementById('next-btn').innerText = "ข้อถัดไป";
+}
+
+function updateStreakUI() {
+    const badge = document.getElementById('streak-display');
+    const count = document.getElementById('streak-count');
+    count.innerText = state.streak;
+    
+    if(state.streak > 0) {
+        badge.classList.add('active');
+        if(state.streak >= 5) badge.classList.add('mega');
+        else badge.classList.remove('mega');
+    } else {
+        badge.classList.remove('active', 'mega');
+    }
 }
 
 function initTable() {
@@ -152,8 +188,4 @@ function initTable() {
     create('grid-yoon', DATA.yoon);
 }
 
-// --- Initial Launch ---
-window.onload = () => {
-    initTable();
-    updateStats();
-};
+window.onload = () => { initTable(); updateStats(); };

@@ -124,3 +124,41 @@ main { flex: 1; padding: 50px; display: flex; justify-content: center; }
 }
 
 @keyframes fadeIn { from { opacity: 0; } to { opacity: 1; } }
+
+/* --- Streak UI --- */
+.streak-badge {
+    background: #fff5e6;
+    padding: 4px 12px;
+    border-radius: 20px;
+    color: #ffa500;
+    font-weight: bold;
+    opacity: 0;
+    transform: scale(0.8);
+    transition: all 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+    border: 1px solid #ffe0b3;
+}
+
+.streak-badge.active {
+    opacity: 1;
+    transform: scale(1);
+}
+
+.mega-streak {
+    background: #ff4500 !important;
+    color: white !important;
+    box-shadow: 0 0 15px rgba(255, 69, 0, 0.4);
+    animation: shake 0.5s infinite;
+}
+
+@keyframes shake {
+    0% { transform: rotate(0deg); }
+    25% { transform: rotate(3deg); }
+    75% { transform: rotate(-3deg); }
+    100% { transform: rotate(0deg); }
+}
+
+/* เพิ่มให้ตัวเลขคะแนนเด้งเวลาตอบถูก */
+#current-score {
+    display: inline-block;
+    transition: transform 0.2s;
+}
