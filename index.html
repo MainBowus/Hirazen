@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Hiragana Zen</title>
+    <title>Hiragana Zen - สำนักฝึกวิชาอักษร</title>
     <link rel="icon" type="image/png" href="zen icon.png">
     <link href="https://fonts.googleapis.com/css2?family=Noto+Serif+JP:wght@500;700&family=Sarabun:wght@300;500&family=Noto+Sans+JP:wght@500;700&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="style.css">
@@ -12,64 +12,183 @@
 
     <div class="mobile-header">
         <div class="mobile-logo">HIRAGANA ZEN</div>
-        <div onclick="toggleNav()" style="cursor:pointer; font-size: 1.2rem;">☰</div>
+        <div onclick="toggleNav()" style="cursor:pointer; font-size: 1.5rem;">☰</div>
     </div>
 
     <nav id="sidebar">
         <div class="logo">平仮名 Zen</div>
         <div class="nav-links">
-            <div class="nav-item active" id="nav-home" onclick="showView('home')">🏠 หน้าหลัก</div>
-            <div class="menu-label">ฝึกฮิรางานะ</div>
+            <div class="nav-item active" id="nav-home" onclick="showView('home')">🏠 หน้าหลัก (Dojo)</div>
+            
+            <div class="menu-label">บทเรียนปกติ</div>
             <div class="nav-item" id="nav-basic" onclick="startQuiz('basic')">✨ พื้นฐาน (A-N)</div>
             <div class="nav-item" id="nav-dakuon" onclick="startQuiz('dakuon')">🔔 เสียงขุ่น (Ga-Po)</div>
             <div class="nav-item" id="nav-yoon" onclick="startQuiz('yoon')">🌀 เสียงควบ (Kya)</div>
-            <div class="menu-label">คลังความรู้</div>
-            <div class="nav-item" id="nav-table" onclick="showView('table')">📊 ตารางฮิรางานะ</div>
+            
+            <div class="menu-label">ท้าทายขีดจำกัด (Hard)</div>
+            <div class="nav-item" onclick="prepareHard('basic')" style="color: var(--hard-red); font-weight: bold;">💀 พื้นฐาน Hard</div>
+            <div class="nav-item" onclick="prepareHard('dakuon')" style="color: var(--hard-red); font-weight: bold;">💀 เสียงขุ่น Hard</div>
+            <div class="nav-item" onclick="prepareHard('yoon')" style="color: var(--hard-red); font-weight: bold;">💀 เสียงควบ Hard</div>
+
+            <div class="menu-label">ห้องสมุด</div>
+            <div class="nav-item" id="nav-table" onclick="showView('table')">📊 ตารางอักษร</div>
         </div>
     </nav>
 
     <main>
         <section id="home" class="view-section active">
-            <h1 class="hero-title">สงบนิ่งและเรียนรู้</h1>
-            <p class="hero-subtitle">เริ่มต้นการฝึกฝนฮิรางานะด้วยจิตใจที่ผ่อนคลาย</p>
+            <h1 class="hero-title">วิถีแห่งอักษร</h1>
             
-            <div class="stats-container">
-                <div class="stat-card"><b id="stat-score">0</b><span>คะแนนสูงสุด</span></div>
-                <div class="stat-card"><b id="stat-total">0</b><span>ข้อที่ฝึกแล้ว</span></div>
+            <div id="rank-card" class="zen-card" style="text-align: center; margin-bottom: 30px; border-bottom: 5px solid var(--zen-green);">
+                <div id="rank-icon" style="font-size: 5rem; margin-bottom: 10px;">🍡</div>
+                <h2 id="rank-name" style="margin: 0; font-family: 'Noto Serif JP'; letter-spacing: 2px; font-size: 2.2rem;">DANGO</h2>
+                <p id="rank-next" style="color: #a5a095; font-size: 0.9rem; margin-top: 5px;">กำลังโหลดข้อมูลศิษย์...</p>
             </div>
 
-            <div class="zen-card clickable" onclick="startQuiz('basic')">
-                <h3>บทเรียนพื้นฐาน</h3>
-                <p>ฝึกตัวอักษร 46 ตัวหลักที่ใช้บ่อยที่สุด</p>
-                <span class="cta-text">คลิกเพื่อเริ่มฝึก ➔</span>
+            <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(280px, 1fr)); gap: 20px; margin-bottom: 30px;">
+                <div class="zen-card" style="padding: 20px;">
+                    <h4 style="margin: 0 0 10px 0;">🎯 เป้าหมายวันนี้</h4>
+                    <div style="display: flex; justify-content: space-between; font-size: 0.8rem; margin-bottom: 5px;">
+                        <span>ความคืบหน้า</span>
+                        <span><span id="daily-count">0</span>/100 ข้อ</span>
+                    </div>
+                    <div style="width:100%; height:10px; background:#eee; border-radius:5px; overflow:hidden;">
+                        <div id="daily-progress" style="width:0%; height:100%; background:var(--zen-green); transition: 0.8s;"></div>
+                    </div>
+                </div>
+
+                <div class="zen-card" style="padding: 20px; border-left: 4px solid var(--zen-wood);">
+                    <h4 style="margin: 0 0 8px 0;">💡 Quick Tip</h4>
+                    <p id="quick-tip-text" style="font-size: 0.85rem; color: #555; margin: 0; line-height: 1.5;">
+                        สุ่มคำแนะนำเพื่อช่วยจำ...
+                    </p>
+                </div>
             </div>
-        </section>
+            
+            <div class="stats-container">
+                <div class="stat-card"><b id="stat-score">0</b><span>คะแนนสูงสุด (Best)</span></div>
+                <div class="stat-card"><b id="stat-total">0</b><span>ฝึกฝนสะสมทั้งหมด</span></div>
+            </div>
+
+            <div class="zen-card" style="margin-bottom: 30px; background: #fdfcf9;">
+                <h3 style="margin: 0 0 15px 0; font-family: 'Noto Serif JP';">🎖️ ลำดับยศ (Rank System)</h3>
+                <div style="overflow-x: auto;">
+                    <table style="width: 100%; border-collapse: collapse; font-size: 0.9rem; text-align: left;">
+                        <thead>
+                            <tr style="border-bottom: 2px solid #eee;">
+                                <th style="padding: 12px;">ยศ</th>
+                                <th>คะแนน Best Score</th>
+                                <th>สถานะ</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr style="border-bottom: 1px solid #eee;">
+                                <td style="padding: 12px;">🍡 DANGO</td>
+                                <td>0</td>
+                                <td style="color: #a5a095;">ผู้เริ่มต้นฝึก</td>
+                            </tr>
+                            <tr style="border-bottom: 1px solid #eee; color: #6b8e23; font-weight: bold;">
+                                <td style="padding: 12px;">⚔️ SAMURAI</td>
+                                <td>1,000</td>
+                                <td>นักรบชำนาญการ</td>
+                            </tr>
+                            <tr style="border-bottom: 1px solid #eee; color: #4f6a1a; font-weight: bold;">
+                                <td style="padding: 12px;">🎓 SENSEI</td>
+                                <td>5,000</td>
+                                <td>อาจารย์ผู้สอนสั่ง</td>
+                            </tr>
+                            <tr style="border-bottom: 1px solid #eee; color: var(--hard-red); font-weight: bold;">
+                                <td style="padding: 12px;">👑 SHOGUN</td>
+                                <td>20,000</td>
+                                <td>จอมทัพปกครองสำนัก</td>
+                            </tr>
+                            <tr style="color: #9370db; font-weight: bold;">
+                                <td style="padding: 12px;">⛩️ KAMI</td>
+                                <td>50,000</td>
+                                <td>เทพเจ้าแห่งเซน</td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+
+            <div class="zen-card" style="padding: 25px;">
+                <h3 style="margin: 0 0 15px 0; font-family: 'Noto Serif JP';">📜 บันทึกสำนัก (Recent Updates)</h3>
+                <div class="update-list">
+                    <div class="update-item" style="border-left: 3px solid var(--hard-red); padding-left: 15px;">
+                        <b style="color: var(--hard-red);">v1.6 - Godlike Balance 12/2/26</b>
+                        <ul style="font-size: 0.85rem; color: #555; margin: 8px 0 0 0; padding-left: 15px;">
+                            <li>ปรับเกณฑ์ยศ <b>KAMI</b> เป็น 50,000 แต้ม</li>
+                            <li>เพิ่มระบบ <b>Quick Tips</b> สุ่มคำแนะนำช่วยจำ</li>
+                            <li>ระบบรีเซ็ตเป้าหมายรายวันอัตโนมัติ</li>
+                        </ul>
+                    </div>
+                </div>
+            </div>
+
+            <div class="zen-card" style="padding: 25px; margin-top: 25px; background: linear-gradient(145deg, #ffffff, #f0f7f0); border-top: 5px solid #3498db;">
+                <h3 style="margin: 0 0 20px 0; font-family: 'Noto Serif JP'; display: flex; align-items: center; gap: 10px;">
+                    🚀 วิถีแห่งอนาคต (Coming Soon)
+                </h3>
+                <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 15px;">
+                    
+                    <div style="background: rgba(255,255,255,0.7); padding: 15px; border-radius: 10px; border: 1px dashed #3498db;">
+                        <b style="color: #2980b9; display: block; margin-bottom: 5px;">🔥 โหมด Extreme</b>
+                        <p style="font-size: 0.8rem; color: #666; margin: 0;">ตัวเลือกที่มากขึ้น ได้รับคะแนนที่มากขึ้น รวมอักษรทุกรูปแบบ</p>
+                    </div>
+
+                    <div style="background: rgba(255,255,255,0.7); padding: 15px; border-radius: 10px; border: 1px dashed #3498db;">
+                        <b style="color: #2980b9; display: block; margin-bottom: 5px;">🏮 อักษร Katakana</b>
+                        <p style="font-size: 0.8rem; color: #666; margin: 0;">เตรียมเพิ่มชุดอักษรคาตาคานะเต็มรูปแบบ พร้อมตารางเปรียบเทียบ</p>
+                    </div>
+
+
+                </div>
+            </div>
+            </section>
 
         <section id="quiz" class="view-section">
             <div class="zen-card quiz-container">
-                <div class="quiz-header">
-                    <div id="streak-display" class="streak-badge">
-                        🔥 <span id="streak-count">0</span>
+                <div id="hard-ui" style="display:none; margin-bottom:20px;">
+                    <div style="display:flex; justify-content:space-between; color:var(--hard-red); font-weight:bold;">
+                        <span id="timer-text">⏱️ 05:00</span>
+                        <span>ภารกิจ: <span id="hard-streak-count">0</span>/20</span>
                     </div>
-                    <span>SCORE: <b id="current-score">0</b></span>
+                    <div style="width:100%; height:12px; background:#eee; border-radius:6px; margin-top:10px; overflow:hidden;">
+                        <div id="hard-progress" style="width:0%; height:100%; background:linear-gradient(90deg, #ff4500, #ff8c00); transition:0.4s;"></div>
+                    </div>
                 </div>
-                <div class="q-char" id="target-char">あ</div>
-                <div id="quiz-feedback" class="feedback-area"></div>
+
+                <div class="quiz-header" style="display: flex; justify-content: space-between; margin-bottom: 20px;">
+                    <div id="streak-display" class="streak-badge">🔥 <span id="streak-count">0</span></div>
+                    <div style="font-weight: bold;">คะแนน: <span id="current-score">0</span></div>
+                </div>
+                <div class="q-char" id="target-char">?</div>
+                <div id="quiz-feedback" style="text-align:center; min-height:25px; margin-bottom:15px; font-weight:bold;"></div>
                 <div class="choices-grid" id="choices-area"></div>
-                <button class="action-btn" id="next-btn" onclick="handleQuizAction()" disabled>ยืนยันคำตอบ</button>
+                <button class="action-btn" id="next-btn" onclick="handleQuizAction()" disabled>เลือกคำตอบ</button>
             </div>
         </section>
 
         <section id="table" class="view-section">
-            <h2 class="section-title">ตารางอักษรฮิรางานะ</h2>
-            <div class="group-header">Gojūon (เสียงพื้นฐาน)</div>
+            <h2 class="section-title" style="text-align: center; font-family: 'Noto Serif JP'; margin-bottom: 30px;">ตารางอักษร</h2>
+            <div class="group-header">พื้นฐาน</div>
             <div class="char-grid" id="grid-basic"></div>
-            <div class="group-header">Dakuon (เสียงขุ่น)</div>
+            <div class="group-header">เสียงขุ่น</div>
             <div class="char-grid" id="grid-dakuon"></div>
-            <div class="group-header">Yōon (เสียงควบ)</div>
+            <div class="group-header">เสียงควบ</div>
             <div class="char-grid" id="grid-yoon"></div>
         </section>
     </main>
+
+    <div id="hard-overlay" style="display:none; position:fixed; top:0; left:0; width:100%; height:100%; background:rgba(0,0,0,0.85); z-index:2000; align-items:center; justify-content:center; backdrop-filter:blur(5px);">
+        <div class="zen-card" style="max-width:400px; width:90%; text-align:center; border:2px solid var(--hard-red);">
+            <h2 style="color:var(--hard-red); font-family:'Noto Serif JP';">💀 MISSION START</h2>
+            <p id="mission-text" style="margin:20px 0; line-height: 1.6;"></p>
+            <button class="action-btn" onclick="confirmHard()" style="background:var(--hard-red);">น้อมรับคำท้า</button>
+            <button class="action-btn" onclick="document.getElementById('hard-overlay').style.display='none'" style="background:#ccc; margin-top:10px; border:none;">ถอยตั้งหลัก</button>
+        </div>
+    </div>
 
     <script src="script.js"></script>
 </body>

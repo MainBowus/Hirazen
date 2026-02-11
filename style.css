@@ -1,3 +1,4 @@
+/* --- 1. การตั้งค่าพื้นฐาน (Root & Reset) --- */
 :root {
     --zen-bg: #f9f7f2;
     --zen-green: #6b8e23;
@@ -5,160 +6,186 @@
     --zen-wood: #d2b48c;
     --text-main: #3d3d3d;
     --white: #ffffff;
-    --sidebar-w: 250px;
+    --sidebar-w: 260px;
+    --hard-red: #ff4500;
+    --kami-purple: #9370db;
 }
 
-* { box-sizing: border-box; -webkit-tap-highlight-color: transparent; }
+* { 
+    box-sizing: border-box; 
+    -webkit-tap-highlight-color: transparent; 
+    transition: background-color 0.2s, transform 0.2s;
+}
 
 body {
-    font-family: 'Sarabun', sans-serif;
+    font-family: 'Sarabun', 'Noto Sans JP', sans-serif;
     background-color: var(--zen-bg);
     background-image: radial-gradient(#e5e0d5 1px, transparent 1px);
     background-size: 20px 20px;
-    margin: 0; display: flex; color: var(--text-main); min-height: 100vh;
+    margin: 0; 
+    display: flex; 
+    color: var(--text-main); 
+    min-height: 100vh;
 }
 
-/* --- Sidebar --- */
+/* --- 2. แถบเมนูข้าง (Sidebar) --- */
 nav {
-    width: var(--sidebar-w); background: var(--white);
-    height: 100vh; position: sticky; top: 0;
-    display: flex; flex-direction: column; padding: 40px 20px;
-    border-right: 1px solid #e0d9cc; z-index: 1000;
+    width: var(--sidebar-w); 
+    background: var(--white);
+    height: 100vh; 
+    position: sticky; 
+    top: 0;
+    display: flex; 
+    flex-direction: column; 
+    padding: 30px 15px;
+    border-right: 1px solid #eeeae0; 
+    z-index: 1000;
 }
 
 .logo { 
-    font-family: 'Noto Serif JP', serif; font-size: 1.5rem; 
-    color: var(--zen-dark-green); font-weight: 700; margin-bottom: 40px; 
-    text-align: center; border-bottom: 2px solid var(--zen-bg); padding-bottom: 10px;
+    font-family: 'Noto Serif JP', serif; 
+    font-size: 1.6rem; 
+    color: var(--zen-dark-green); 
+    font-weight: 700; 
+    margin-bottom: 30px; 
+    text-align: center;
+    letter-spacing: 1px;
 }
 
-.nav-links { display: flex; flex-direction: column; gap: 5px; flex: 1; }
-.menu-label { font-size: 0.75rem; color: #a5a095; text-transform: uppercase; margin: 20px 0 10px 10px; letter-spacing: 1.5px; }
+.nav-links { display: flex; flex-direction: column; gap: 4px; flex: 1; }
+.menu-label { 
+    font-size: 0.7rem; 
+    color: #a5a095; 
+    text-transform: uppercase; 
+    margin: 15px 0 5px 12px; 
+    letter-spacing: 1.2px; 
+}
 
 .nav-item {
-    padding: 12px 15px; border-radius: 8px; cursor: pointer;
-    color: #7a756b; font-weight: 500; transition: 0.3s;
-    display: flex; align-items: center; gap: 10px;
+    padding: 10px 15px; 
+    border-radius: 10px; 
+    cursor: pointer;
+    color: #7a756b; 
+    font-weight: 500;
+    display: flex; 
+    align-items: center; 
+    gap: 12px;
 }
 .nav-item:hover { background: #fdfcf9; color: var(--zen-green); }
-.nav-item.active { background: var(--zen-green); color: white; }
+.nav-item.active { background: var(--zen-green); color: white; box-shadow: 0 4px 12px rgba(107, 142, 35, 0.2); }
 
-/* --- Content Layout --- */
-main { flex: 1; padding: 50px; display: flex; justify-content: center; }
-.view-section { display: none; width: 100%; max-width: 950px; animation: fadeIn 0.6s ease; }
+/* --- 3. พื้นที่เนื้อหาหลัก (Main Content) --- */
+main { flex: 1; padding: 40px; display: flex; justify-content: center; overflow-x: hidden; }
+.view-section { display: none; width: 100%; max-width: 900px; animation: fadeIn 0.5s ease; }
 .view-section.active { display: block; }
 
-.hero-title { font-family: 'Noto Serif JP'; font-size: 2.5rem; margin-top: 0; }
-.hero-subtitle { color: #7a756b; margin-bottom: 40px; }
-
-.stats-container { display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 20px; margin-bottom: 40px; }
-.stat-card { background: #fdfcf9; padding: 20px; border-radius: 12px; border: 1px solid #eeeae0; text-align: center; }
-.stat-card b { display: block; font-size: 2rem; color: var(--zen-green); font-family: 'Noto Serif JP'; }
-
-/* --- Zen Cards --- */
 .zen-card { 
-    background: var(--white); border-radius: 15px; padding: 40px; 
-    box-shadow: 0 10px 30px rgba(0,0,0,0.03); border: 1px solid #eeeae0;
+    background: var(--white); 
+    border-radius: 18px; 
+    padding: 25px; 
+    box-shadow: 0 10px 40px rgba(0,0,0,0.02); 
+    border: 1px solid #eeeae0;
+    margin-bottom: 20px;
 }
-.zen-card.clickable { cursor: pointer; }
-.cta-text { color: var(--zen-green); font-weight: 500; }
 
-/* --- Quiz UI --- */
-.quiz-container { max-width: 550px; margin: 0 auto; }
-.quiz-header { display: flex; justify-content: space-between; color: #a5a095; font-size: 0.9rem; }
-.quiz-header b { color: var(--zen-green); }
+/* --- 4. ระบบยศและการเลื่อนระดับ (Rank UI) --- */
+#rank-icon { transition: transform 0.5s cubic-bezier(0.175, 0.885, 0.32, 1.275); }
+#rank-card:hover #rank-icon { transform: scale(1.1) rotate(5deg); }
 
+.rank-kami {
+    color: var(--kami-purple) !important;
+    text-shadow: 0 0 10px rgba(147, 112, 219, 0.3);
+    animation: kamiGlow 2s infinite alternate;
+}
+
+@keyframes kamiGlow {
+    from { filter: drop-shadow(0 0 2px var(--kami-purple)); }
+    to { filter: drop-shadow(0 0 15px var(--kami-purple)); }
+}
+
+/* ตารางยศ */
+table { width: 100%; border-spacing: 0; }
+th { color: #a5a095; font-weight: 500; text-align: left; padding-bottom: 10px; }
+td { padding: 12px 0; border-top: 1px solid #f5f5f5; }
+
+/* --- 5. สถิติและเป้าหมาย (Stats & Goals) --- */
+.stats-container { display: grid; grid-template-columns: 1fr 1fr; gap: 20px; }
+.stat-card { background: #fdfcf9; padding: 20px; border-radius: 15px; text-align: center; border: 1px solid #f0eee5; }
+.stat-card b { display: block; font-size: 1.8rem; color: var(--zen-green); font-family: 'Noto Serif JP'; margin-bottom: 5px; }
+.stat-card span { font-size: 0.85rem; color: #888; }
+
+/* --- 6. ระบบควิซ (Quiz UI) --- */
 .q-char { 
-    font-family: 'Noto Sans JP', sans-serif; font-size: 7rem; 
-    color: var(--text-main); margin: 20px 0; text-align: center; font-weight: 700;
+    font-family: 'Noto Sans JP', sans-serif; 
+    font-size: 7rem; 
+    color: var(--text-main); 
+    margin: 20px 0; 
+    text-align: center; 
+    font-weight: 700;
 }
-.feedback-area { height: 30px; text-align: center; margin-bottom: 15px; font-weight: 500; }
 
-.choices-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 15px; margin: 30px 0; }
+.choices-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 12px; }
+.choices-grid.hard-mode { grid-template-columns: repeat(6, 1fr); gap: 8px; }
+
 .choice-btn {
-    background: var(--white); border: 1px solid #eeeae0; padding: 18px;
-    border-radius: 10px; font-size: 1.3rem; color: var(--text-main);
-    cursor: pointer; transition: 0.2s; font-family: 'Noto Serif JP';
+    background: var(--white); border: 1px solid #eeeae0; padding: 15px 5px;
+    border-radius: 12px; font-size: 1.3rem; color: var(--text-main);
+    cursor: pointer; font-family: 'Noto Serif JP';
 }
-.choice-btn:hover { border-color: var(--zen-green); background: #f9fbef; }
+.choice-btn:hover:not(:disabled) { border-color: var(--zen-green); background: #fdfcf9; }
 .choice-btn.selected { background: var(--zen-green); color: white; border-color: var(--zen-green); }
 .choice-btn.correct { background: #8fbc8f !important; color: white; border-color: #8fbc8f; }
 .choice-btn.wrong { background: #e9967a !important; color: white; border-color: #e9967a; }
 
 .action-btn { 
-    width: 100%; padding: 18px; border: none; border-radius: 10px; 
+    width: 100%; padding: 18px; border: none; border-radius: 12px; 
     background: var(--zen-dark-green); color: white; font-size: 1.1rem; 
-    font-weight: 500; cursor: pointer; transition: 0.3s;
+    font-weight: bold; cursor: pointer; margin-top: 20px;
 }
+.action-btn:hover:not(:disabled) { filter: brightness(1.1); }
 .action-btn:disabled { background: #dcd7cc; cursor: not-allowed; }
 
-/* --- Table UI --- */
-.section-title { font-family: 'Noto Serif JP'; font-size: 2rem; }
-.group-header { 
-    color: var(--zen-dark-green); margin: 40px 0 20px; font-size: 1.4rem; 
-    font-family: 'Noto Serif JP', serif; border-bottom: 1px solid #e0d9cc;
-    padding-bottom: 10px;
+/* --- 7. เอฟเฟกต์ Hard Mode & Streak --- */
+.streak-badge {
+    background: #fff5e6; padding: 6px 15px; border-radius: 25px; color: #ffa500;
+    font-weight: bold; opacity: 0; transition: 0.3s;
 }
-.char-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(85px, 1fr)); gap: 12px; }
-.char-box { 
-    background: var(--white); padding: 15px; border-radius: 8px; 
-    text-align: center; border: 1px solid #eeeae0; transition: 0.3s;
+.streak-badge.active { opacity: 1; }
+.mega-streak {
+    background: var(--hard-red) !important; color: white !important;
+    animation: shake 0.4s infinite;
+    box-shadow: 0 0 15px rgba(255, 69, 0, 0.4);
 }
-.char-box:hover { transform: translateY(-3px); border-color: var(--zen-green); }
-.char-box .jp { font-family: 'Noto Sans JP'; font-size: 1.8rem; color: var(--text-main); display: block; }
-.char-box .ro { font-size: 0.8rem; color: #a5a095; font-weight: 500; }
 
-/* --- Mobile Header --- */
+/* --- 8. บันทึกการอัปเดต (Patch Notes) --- */
+.update-item {
+    background: #fdfcf9; padding: 15px; border-radius: 0 12px 12px 0; transition: 0.3s;
+}
+.update-item:hover { transform: translateX(8px); background: #f9f7f2; }
+
+/* --- 9. การปรับแต่งหน้าจอมือถือ (Responsive) --- */
 .mobile-header { 
     display: none; position: fixed; top: 0; width: 100%; background: var(--white); 
-    padding: 15px 25px; z-index: 1100; border-bottom: 1px solid #eee;
-    justify-content: space-between; align-items: center;
+    padding: 15px 20px; z-index: 1100; border-bottom: 1px solid #eee;
+    justify-content: space-between; align-items: center; box-shadow: 0 2px 10px rgba(0,0,0,0.05);
 }
-.mobile-logo { font-family: 'Noto Serif JP'; font-weight: 700; color: var(--zen-dark-green); }
 
 @media (max-width: 900px) {
-    nav { position: fixed; left: -100%; transition: 0.3s; }
+    nav { position: fixed; left: -100%; transition: 0.4s cubic-bezier(0.4, 0, 0.2, 1); box-shadow: 10px 0 30px rgba(0,0,0,0.1); }
     nav.open { left: 0; }
-    main { padding: 80px 20px; }
+    main { padding: 90px 15px 40px 15px; }
     .mobile-header { display: flex; }
+    .hero-title { font-size: 1.8rem; }
+    .choices-grid.hard-mode { grid-template-columns: repeat(3, 1fr); }
+    .q-char { font-size: 5rem; }
+    .stats-container { grid-template-columns: 1fr; }
 }
 
-@keyframes fadeIn { from { opacity: 0; } to { opacity: 1; } }
-
-/* --- Streak UI --- */
-.streak-badge {
-    background: #fff5e6;
-    padding: 4px 12px;
-    border-radius: 20px;
-    color: #ffa500;
-    font-weight: bold;
-    opacity: 0;
-    transform: scale(0.8);
-    transition: all 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275);
-    border: 1px solid #ffe0b3;
-}
-
-.streak-badge.active {
-    opacity: 1;
-    transform: scale(1);
-}
-
-.mega-streak {
-    background: #ff4500 !important;
-    color: white !important;
-    box-shadow: 0 0 15px rgba(255, 69, 0, 0.4);
-    animation: shake 0.5s infinite;
-}
-
+/* --- 10. Animations --- */
+@keyframes fadeIn { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: translateY(0); } }
 @keyframes shake {
     0% { transform: rotate(0deg); }
-    25% { transform: rotate(3deg); }
-    75% { transform: rotate(-3deg); }
+    25% { transform: rotate(1deg); }
+    75% { transform: rotate(-1deg); }
     100% { transform: rotate(0deg); }
-}
-
-/* เพิ่มให้ตัวเลขคะแนนเด้งเวลาตอบถูก */
-#current-score {
-    display: inline-block;
-    transition: transform 0.2s;
 }
